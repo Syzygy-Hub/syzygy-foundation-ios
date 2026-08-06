@@ -49,6 +49,9 @@ jobs:
             echo "## Coverage Report — coverage data not found." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
       - name: SwiftLint
         run: |
           curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/ios/.swiftlint.yml \
