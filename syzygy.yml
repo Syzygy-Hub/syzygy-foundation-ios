@@ -1,0 +1,10 @@
+# Syzygy Repository Manifest
+# Schema: https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/repository-standard.md
+
+name: syzygy-foundation-ios
+type: foundation
+platform: ios
+language: swift
+package_manager: spm
+license: MIT
+version: 1.0.0

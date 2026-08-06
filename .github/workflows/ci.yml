@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  pull_request_target:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure Syzygy labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "release" --color "11a612" --description "Triggers the release pipeline on merge to main" --repo "${{ github.repository }}" --force 2>/dev/null || true
+          gh label create "chore" --color "e4e669" --description "Maintenance, refactoring, tooling" --repo "${{ github.repository }}" --force 2>/dev/null || true
+          gh label create "dependencies" --color "179d99" --description "Dependency updates" --repo "${{ github.repository }}" --force 2>/dev/null || true
+
+      - name: Build
+        run: swift build
+
+      - name: Test with coverage
+        run: swift test --enable-code-coverage
+
+      - name: Generate coverage summary
+        run: |
+          PROFDATA=$(find .build -name "*.profdata" | head -1)
+          BINARY=$(find .build/debug -name "*PackageTests.xctest" -type d | head -1)
+          if [ -n "$PROFDATA" ] && [ -n "$BINARY" ]; then
+            xcrun llvm-cov report \
+              "$BINARY/Contents/MacOS/$(basename $BINARY .xctest)" \
+              --instr-profile="$PROFDATA" \
+              --ignore-filename-regex=".*Tests.*" \
+              2>/dev/null | tee /tmp/coverage-report.txt || true
+            {
+              echo "## Coverage Report"
+              echo "\`\`\`"
+              cat /tmp/coverage-report.txt
+              echo "\`\`\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Coverage Report — coverage data not found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: SwiftLint
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/ios/.swiftlint.yml \
+            -o .swiftlint.yml.fetched
+          swiftlint --config .swiftlint.yml.fetched
+
+  release:
+    name: Release
+    needs: [build]
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'release')
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from syzygy.yml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' syzygy.yml | sed 's/version: //' | tr -d ' ')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.version.outputs.VERSION }}
+          git push origin ${{ steps.version.outputs.VERSION }}
+
+      - name: Extract CHANGELOG entry
+        id: changelog
+        run: |
+          awk '/^## \[/{if(found) exit; found=1; next} found' CHANGELOG.md > release_notes.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: ${{ steps.version.outputs.VERSION }}
+          body_file: release_notes.txt
+
+      - name: SPM note
+        run: echo "SPM packages are published via git tag — tag ${{ steps.version.outputs.VERSION }} created successfully."
