@@ -65,9 +65,13 @@ jobs:
       github.event_name == 'pull_request_target' &&
       github.event.pull_request.merged == true &&
       contains(github.event.pull_request.labels.*.name, 'release')
-    runs-on: macos-latest
+    runs-on: macos-15
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
 
       - name: Read version from syzygy.yml
         id: version
@@ -75,24 +79,17 @@ jobs:
           VERSION=$(grep '^version:' syzygy.yml | sed 's/version: //' | tr -d ' ')
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create git tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag ${{ steps.version.outputs.VERSION }}
-          git push origin ${{ steps.version.outputs.VERSION }}
-
       - name: Extract CHANGELOG entry
-        id: changelog
         run: |
           awk '/^## \[/{if(found) exit; found=1; next} found' CHANGELOG.md > release_notes.txt
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.VERSION }}
-          name: ${{ steps.version.outputs.VERSION }}
-          body_file: release_notes.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.VERSION }}" \
+            --title "${{ steps.version.outputs.VERSION }}" \
+            --notes-file release_notes.txt
 
       - name: SPM note
-        run: echo "SPM packages are published via git tag — tag ${{ steps.version.outputs.VERSION }} created successfully."
+        run: echo "SPM packages are available via: .package(url: \"https://github.com/Syzygy-Hub/syzygy-foundation-ios\", from: \"${{ steps.version.outputs.VERSION }}\")"
