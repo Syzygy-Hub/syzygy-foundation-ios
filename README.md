@@ -1,4 +1,4 @@
-[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.1-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-dark-1200.png">
@@ -152,14 +152,13 @@ Contributions are welcome. Please follow the [Syzygy engineering standards](http
 
 ## Releases
 
-Releases follow a label-based PR flow:
+Releases follow a commit-message-based flow:
 
-1. Create branch `release/X.X.X`
-2. Bump version in manifest and `syzygy.yml`
+1. Create branch `release/X.X.X` from `main`
+2. Bump version in `syzygy.yml`
 3. Update `CHANGELOG.md`
-4. Open PR → `main` with label: `release`
-5. Get approval and merge
-6. CI tags `X.X.X`, publishes, and creates the GitHub Release automatically
+4. Open PR → `main`, get approval, and merge with commit message starting with `release:`
+5. CI reads the version from `syzygy.yml`, creates a GitHub Release and git tag automatically
 
 See the [Syzygy Release Standard](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/release-standard.md) for full details.
 
