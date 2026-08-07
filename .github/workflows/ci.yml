@@ -92,4 +92,5 @@ jobs:
             --notes-file release_notes.txt
 
       - name: SPM note
-        run: echo "SPM packages are available via: .package(url: \"https://github.com/Syzygy-Hub/syzygy-foundation-ios\", from: \"${{ steps.version.outputs.VERSION }}\")"
+        run: |
+          echo 'SPM packages are available via: .package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "${{ steps.version.outputs.VERSION }}")'
