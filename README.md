@@ -1,4 +1,4 @@
-[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.1-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.2-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-dark-1200.png">
@@ -11,7 +11,7 @@ Contracts, primitives, and shared types for the iOS Syzygy ecosystem — zero im
 
 ## About
 
-syzygy-foundation-ios is the base layer every other Syzygy iOS library depends on. It defines the protocols that Services implements, the value types that UI and Core consume, and the error types the whole stack shares. Nothing in Foundation has behaviour beyond property storage — no network calls, no platform APIs, no business logic. Swap any implementation in Services or Core by conforming to these contracts; Foundation never needs to change.
+syzygy-foundation-ios is the base layer that every other Syzygy iOS library depends on. It defines the protocols that Services implements, the value types that UI and Core consume, and the error types the whole stack shares. Nothing in Foundation has behaviour beyond property storage — no network calls, no platform APIs, no business logic. Swap any implementation in Services or Core by conforming to these contracts; Foundation never needs to change.
 
 ## Platforms
 
