@@ -10,6 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.0.1] - 2026-08-07
+
+### Changed
+
+#### CI
+- Release job rewritten: no longer uses `pull_request_target` + label-based trigger; now fires on `push` to `main` where commit message starts with `release:`
+- Release job now uses `GITHUB_TOKEN` + `gh release create` with `permissions: contents: write`; removed manual `git remote set-url` + `git tag` + `git push` approach
+- Checkout in release job now pins to `merge_commit_sha` to ensure correct ref is tagged
+- Build job now runs on `push` to all branches and `pull_request` to `main`; removed `pull_request_target` trigger
+- `Install SwiftLint` step added before SwiftLint lint step
+- Self-healing label step retained in build job
+- `.gitignore` updated: `.DS_Store`, `.github/.DS_Store`, `**/.DS_Store` entries added
+
+---
+
 ## [1.0.0] - 2026-08-06
 
 ### Added
@@ -81,5 +96,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage step added: `--enable-code-coverage` flag + `llvm-cov report` summary written to `GITHUB_STEP_SUMMARY`
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases/tag/1.0.0
