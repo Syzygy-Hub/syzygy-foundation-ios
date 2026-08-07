@@ -15,7 +15,7 @@ public struct SyzygyVersion: Equatable, Comparable, Codable, CustomStringConvert
     }
 
     /// The Foundation library version.
-    public static let current = SyzygyVersion(1, 0, 0)
+    public static let current = SyzygyVersion(1, 0, 2)
 
     /// Returns e.g. `"1.2.3"` or `"1.2.3-beta"`.
     public var description: String {

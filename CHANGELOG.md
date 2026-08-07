@@ -10,6 +10,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.0.2] - 2026-08-07
+
+### Changed
+
+#### CI
+- Removed `Ensure Syzygy labels exist` self-healing step from build job — Syzygy-specific label management has been retired org-wide; GitHub default labels are used instead
+
+#### Source
+- `SyzygyVersion.current` bumped to `1.0.2` to stay in sync with the release version
+
+---
+
 ## [1.0.1] - 2026-08-07
 
 ### Changed
@@ -96,6 +108,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage step added: `--enable-code-coverage` flag + `llvm-cov report` summary written to `GITHUB_STEP_SUMMARY`
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.2...HEAD
+[1.0.2]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases/tag/1.0.0

@@ -12,6 +12,10 @@ struct SyzygyVersionTests {
         #expect(version.description == "1.2.3-beta")
     }
 
+    @Test func currentVersionMatchesRelease() {
+        #expect(SyzygyVersion.current.description == "1.0.2")
+    }
+
     @Test func comparable() {
         let v100 = SyzygyVersion(1, 0, 0)
         let v110 = SyzygyVersion(1, 1, 0)
