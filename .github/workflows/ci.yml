@@ -3,14 +3,26 @@ name: CI
 on:
   push:
     branches: ['**']
+    tags-ignore: ['*']
   pull_request:
     branches: [main]
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch SwiftLint config
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/ios/.swiftlint.yml \
+            -o .swiftlint.yml
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: SwiftLint
+        run: swiftlint --config .swiftlint.yml
 
       - name: Build
         run: swift build
@@ -37,47 +49,3 @@ jobs:
           else
             echo "## Coverage Report — coverage data not found." >> "$GITHUB_STEP_SUMMARY"
           fi
-
-      - name: Install SwiftLint
-        run: brew install swiftlint
-
-      - name: SwiftLint
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/ios/.swiftlint.yml \
-            -o .swiftlint.yml.fetched
-          swiftlint --config .swiftlint.yml.fetched
-
-  release:
-    name: Release
-    needs: [build]
-    if: |
-      github.event_name == 'push' &&
-      github.ref == 'refs/heads/main' &&
-      startsWith(github.event.head_commit.message, 'release:')
-    runs-on: macos-15
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Read version from syzygy.yml
-        id: version
-        run: |
-          VERSION=$(grep '^version:' syzygy.yml | sed 's/version: //' | tr -d ' ')
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Extract CHANGELOG entry
-        run: |
-          awk '/^## \[/{if(found) exit; found=1; next} found' CHANGELOG.md > release_notes.txt
-
-      - name: Create GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create "${{ steps.version.outputs.VERSION }}" \
-            --title "${{ steps.version.outputs.VERSION }}" \
-            --notes-file release_notes.txt
-
-      - name: SPM note
-        run: |
-          echo 'SPM packages are available via: .package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "${{ steps.version.outputs.VERSION }}")'

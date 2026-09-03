@@ -8,6 +8,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
+### Fixed
+
+---
+
+## [1.1.0] — 2026-09-03
+
+### Changed
+- Ecosystem repositioned as AI-enabled cross-platform engineering framework for mobile, web and enterprise
+- CI workflow refactored — inline release job removed, release now handled by org-level tag-push workflow
+- Lint configuration migrated to `Syzygy-Hub/.github/engineering/tooling/`
+- Lint step reordered to run before build and test
+- CI runner updated from `macos-15` to `macos-latest`
+- README updated with ecosystem architecture, shared contracts documentation, and release process
+
+### Added
+- `syzygy.yml` confirmed as canonical version source of truth
+- Shared contracts section documenting `NetworkClientProtocol`, `AuthProvider`, `StorageProvider`, `LoggerProtocol`
+
 ---
 
 ## [1.0.2] - 2026-08-07
@@ -108,7 +130,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage step added: `--enable-code-coverage` flag + `llvm-cov report` summary written to `GITHUB_STEP_SUMMARY`
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.2...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.2...1.1.0
 [1.0.2]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases/tag/1.0.0

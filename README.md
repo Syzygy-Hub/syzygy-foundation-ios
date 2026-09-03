@@ -1,17 +1,47 @@
-[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.2-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.1.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-dark-1200.png">
-  <img src="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-light-1200.png" alt="Syzygy" width="600">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
+  <img src="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-light-1200.png" alt="Syzygy" width="600">
 </picture>
 
 # syzygy-foundation-ios
 
-Contracts, primitives, and shared types for the iOS Syzygy ecosystem — zero implementation, zero dependencies.
+The root layer of the Syzygy ecosystem — providing SharedTypes, base protocols, and shared contracts that every peer layer builds on.
 
 ## About
 
 syzygy-foundation-ios is the base layer that every other Syzygy iOS library depends on. It defines the protocols that Services implements, the value types that UI and Core consume, and the error types the whole stack shares. Nothing in Foundation has behaviour beyond property storage — no network calls, no platform APIs, no business logic. Swap any implementation in Services or Core by conforming to these contracts; Foundation never needs to change.
+
+## Role in the Syzygy Ecosystem
+
+`syzygy-foundation-ios` is the root layer — the only dependency shared by all peer layers. It depends on nothing. Every peer layer (UI, Core, Services, AI) depends on Foundation and nothing else.
+
+Full ecosystem architecture: [ecosystem-fragment.md](https://github.com/Syzygy-Hub/.github/blob/main/docs/ecosystem-fragment.md)
+
+### Shared Contracts
+
+Foundation defines the shared contracts that all peer layers consume. These contracts are the abstraction layer that allows UI, Core, Services and AI to each depend on Foundation without depending on each other.
+
+- **`NetworkClientProtocol`** — abstracts HTTP networking so any peer layer can make network requests without depending on a concrete implementation. `syzygy-services-ios` provides the concrete URLSession implementation.
+- **`AuthProvider`** — abstracts authentication and token management. `syzygy-services-ios` provides the concrete OAuth and keychain implementations.
+- **`StorageProvider`** — abstracts local persistence. `syzygy-services-ios` provides the concrete Keychain implementation.
+- **`LoggerProtocol`** — abstracts logging and observability so all peer layers can log without depending on a specific logging framework.
+
+> These contracts are currently defined as planned interfaces. Concrete implementations will ship with `syzygy-services-ios` in Phase 2 of the ecosystem roadmap.
+
+## Release Process
+
+Releases follow the Syzygy tag-push release flow:
+
+1. Create a `release/X.X.X` branch
+2. Bump the version in `syzygy.yml`, `Package.swift` (via git tag — SPM uses tags), the README badge, `CHANGELOG.md`, and `Sources/SyzygyFoundation/SharedTypes/SyzygyVersion.swift`
+3. Open a PR to `main` and wait for CI to pass
+4. Merge the PR
+5. Push the tag: `git tag X.X.X` and `git push origin X.X.X`
+6. The tag push triggers the org-level release workflow which validates `syzygy.yml` matches the tag, extracts the CHANGELOG entry, and creates the GitHub Release
+
+For the full release standard see the [Syzygy-Hub/.github release standard](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/release-standard.md).
 
 ## Platforms
 
@@ -29,7 +59,7 @@ syzygy-foundation-ios is the base layer that every other Syzygy iOS library depe
 
 ```swift
 // In Package.swift
-.package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "1.0.0")
+.package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "1.1.0")
 
 // Add to your target dependencies
 .product(name: "SyzygyFoundation", package: "syzygy-foundation-ios")
@@ -47,7 +77,7 @@ SyzygyFoundation exposes two targets:
 
 **Depends on:** nothing
 
-**Used by:** syzygy-ui-ios, syzygy-core-ios, syzygy-services-ios
+**Used by:** syzygy-ui-ios, syzygy-core-ios, syzygy-services-ios, syzygy-ai-ios
 
 For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com/Syzygy-Hub/.github/blob/main/engineering/architecture/syzygy-ecosystem.md).
 
@@ -149,18 +179,6 @@ final class MyServiceTests: XCTestCase {
 ## Contributing
 
 Contributions are welcome. Please follow the [Syzygy engineering standards](https://github.com/Syzygy-Hub/.github/tree/main/engineering/standards) when submitting pull requests.
-
-## Releases
-
-Releases follow a commit-message-based flow:
-
-1. Create branch `release/X.X.X` from `main`
-2. Bump version in `syzygy.yml`
-3. Update `CHANGELOG.md`
-4. Open PR → `main`, get approval, and merge with commit message starting with `release:`
-5. CI reads the version from `syzygy.yml`, creates a GitHub Release and git tag automatically
-
-See the [Syzygy Release Standard](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/release-standard.md) for full details.
 
 ## License
 
