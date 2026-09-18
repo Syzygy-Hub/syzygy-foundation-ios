@@ -16,6 +16,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.2.0] - 2026-09-18
+
+### Changed
+- CI: aligned Node version to 20 across all workflow jobs
+- CI: modernised runner and release workflow tooling
+- Tests: updated SyzygyVersionTests to track current release version
+
+---
+
 ## [1.1.0] — 2026-09-03
 
 ### Changed
@@ -130,7 +139,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage step added: `--enable-code-coverage` flag + `llvm-cov report` summary written to `GITHUB_STEP_SUMMARY`
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.2...1.1.0
 [1.0.2]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.0...1.0.1
