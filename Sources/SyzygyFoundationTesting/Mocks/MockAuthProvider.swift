@@ -9,6 +9,9 @@ public final class MockAuthProvider: AuthProvider, @unchecked Sendable {
     public var refreshCallCount: Int = 0
     public var signOutCallCount: Int = 0
     public var refreshResult: Result<AuthToken, any Error> = .success(AuthToken.fixture())
+    public var canUseBiometricResult: Bool = false
+    public var authenticateWithBiometricResult: Bool = false
+    public var refreshTokenResult: Bool = false
 
     public init(initialState: AuthState = .unauthenticated) {
         self.subject = CurrentValueSubject(initialState)
@@ -35,5 +38,17 @@ public final class MockAuthProvider: AuthProvider, @unchecked Sendable {
     public func signOut() {
         signOutCallCount += 1
         state = .unauthenticated
+    }
+
+    public func canUseBiometric() -> Bool {
+        canUseBiometricResult
+    }
+
+    public func authenticateWithBiometric(reason: String) async -> Bool {
+        authenticateWithBiometricResult
+    }
+
+    public func refreshToken() async -> Bool {
+        refreshTokenResult
     }
 }

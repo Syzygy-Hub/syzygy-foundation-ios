@@ -13,7 +13,7 @@ struct SyzygyVersionTests {
     }
 
     @Test func currentVersionMatchesRelease() {
-        #expect(SyzygyVersion.current.description == "1.2.0")
+        #expect(SyzygyVersion.current.description == "2.0.0")
     }
 
     @Test func comparable() {

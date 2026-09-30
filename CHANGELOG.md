@@ -16,6 +16,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [2.0.0] - 2026-09-29
+
+### Added
+- `dispose()` added to `NetworkClientProtocol` — signals that the client should cancel in-flight requests and release resources; `MockNetworkClient` updated with a no-op conformance. **Breaking change.**
+- `dispose()` added to `ConnectivityProvider` — signals that the provider should cancel its underlying `NWPathMonitor` and release resources; `MockConnectivityProvider` updated with a no-op conformance. **Breaking change.**
+- `canUseBiometric() -> Bool` and `authenticateWithBiometric(reason:) async -> Bool` added to `AuthProvider` — expose biometric availability and authentication; `MockAuthProvider` updated with configurable stub conformances (default `false`). **Breaking change.**
+- `refreshToken() async -> Bool` added to `AuthProvider` — silent background token refresh without user interaction; `MockAuthProvider` updated with configurable `refreshTokenResult` (default `false`). **Breaking change.**
+- `SyzygyFoundationError` — new typed error enum (`Sendable`, `LocalizedError`) with six cases: `.network(underlying:)`, `.authentication(underlying:)`, `.notFound`, `.timeout`, `.cancelled`, `.unknown(underlying:)`. **Breaking change.**
+- `ContractV2Tests` — new test suite covering `dispose()` on mocks, all new `AuthProvider` methods, and all six `SyzygyFoundationError` cases.
+
+### Fixed
+- Release workflow: `contents: write` and `id-token: write` permissions added (merged from `fix/release-permissions`).
+
+### Breaking Changes Summary
+The following protocol requirements are new in v2.0.0. Any concrete conformance that does not implement them will fail to compile:
+- `NetworkClientProtocol.dispose()`
+- `ConnectivityProvider.dispose()`
+- `AuthProvider.canUseBiometric() -> Bool`
+- `AuthProvider.authenticateWithBiometric(reason:) async -> Bool`
+- `AuthProvider.refreshToken() async -> Bool`
+
+---
+
 ## [1.2.0] - 2026-09-18
 
 ### Changed
@@ -139,7 +162,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage step added: `--enable-code-coverage` flag + `llvm-cov report` summary written to `GITHUB_STEP_SUMMARY`
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.2.0...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/2.0.0...HEAD
 [1.2.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.2...1.1.0
 [1.0.2]: https://github.com/Syzygy-Hub/syzygy-foundation-ios/compare/1.0.1...1.0.2

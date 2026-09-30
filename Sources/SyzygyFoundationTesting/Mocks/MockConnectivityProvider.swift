@@ -20,4 +20,8 @@ public final class MockConnectivityProvider: ConnectivityProvider, @unchecked Se
     }
 
     public var isConnected: Bool { state.isConnected }
+
+    public func dispose() {
+        // No-op in the mock; real providers would cancel NWPathMonitor here.
+    }
 }
