@@ -11,4 +11,10 @@ public protocol ConnectivityProvider: AnyObject, Sendable {
 
     /// Convenience accessor — equivalent to `state.isConnected`.
     var isConnected: Bool { get }
+
+    /// Releases any underlying resources (e.g. `NWPathMonitor`) held by the provider.
+    ///
+    /// Call when the provider is no longer needed. After calling `dispose()`, the
+    /// behaviour of other methods and properties is undefined.
+    func dispose()
 }

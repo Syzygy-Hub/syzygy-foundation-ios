@@ -17,6 +17,10 @@ public final class MockNetworkClient: NetworkClientProtocol, @unchecked Sendable
         }
         return responses.removeFirst()
     }
+
+    public func dispose() {
+        // No-op in the mock; real clients would cancel in-flight requests here.
+    }
 }
 
 public enum MockNetworkClientError: Error {

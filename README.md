@@ -1,4 +1,4 @@
-[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.2.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-2.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
@@ -59,7 +59,7 @@ For the full release standard see the [Syzygy-Hub/.github release standard](http
 
 ```swift
 // In Package.swift
-.package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "1.2.0")
+.package(url: "https://github.com/Syzygy-Hub/syzygy-foundation-ios", from: "2.0.0")
 
 // Add to your target dependencies
 .product(name: "SyzygyFoundation", package: "syzygy-foundation-ios")
@@ -92,12 +92,52 @@ For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com
 
 ### Contracts
 
-- `NetworkClientProtocol` / `NetworkRequest` / `NetworkResponse` — networking contract
-- `StorageProvider` / `StorageKey` — type-safe storage contract
-- `AuthProvider` / `AuthToken` / `AuthState` — authentication contract
-- `AnalyticsProvider` / `AnalyticsEvent` — analytics contract
-- `LoggerProtocol` / `LogLevel` / `LogEntry` — logging contract
-- `ConnectivityProvider` / `ConnectivityState` — connectivity contract
+#### NetworkClientProtocol
+```swift
+func execute(_ request: NetworkRequest) async throws -> NetworkResponse
+func dispose()
+```
+
+#### AuthProvider
+```swift
+var statePublisher: AnyPublisher<AuthState, Never> { get }
+var state: AuthState { get }
+func authenticate(token: AuthToken)
+func refresh() async throws -> AuthToken
+func signOut()
+func canUseBiometric() -> Bool
+func authenticateWithBiometric(reason: String) async -> Bool
+func refreshToken() async -> Bool
+```
+
+#### ConnectivityProvider
+```swift
+var statePublisher: AnyPublisher<ConnectivityState, Never> { get }
+var state: ConnectivityState { get }
+var isConnected: Bool { get }
+func dispose()
+```
+
+#### StorageProvider
+```swift
+func get<T: Codable>(_ key: StorageKey<T>) -> T?
+func set<T: Codable>(_ value: T, for key: StorageKey<T>)
+func remove<T>(_ key: StorageKey<T>)
+func clear()
+```
+
+#### LoggerProtocol
+```swift
+func log(_ entry: LogEntry)
+// Convenience: debug/info/warning/error/critical
+```
+
+#### AnalyticsProvider
+```swift
+func track(_ event: AnalyticsEvent)
+func identify(userId: String, traits: [String: String])
+func reset()
+```
 
 ### Shared Types
 
@@ -108,9 +148,44 @@ For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com
 
 ### Errors
 
+#### SyzygyFoundationError (v2.0.0)
+
+A typed, `Sendable` error model for Foundation-level failures. Conforms to `LocalizedError`.
+
+```swift
+public enum SyzygyFoundationError: Error, Sendable {
+    case network(underlying: (any Error)?)
+    case authentication(underlying: (any Error)?)
+    case notFound
+    case timeout
+    case cancelled
+    case unknown(underlying: (any Error)?)
+}
+```
+
+| Case | When to use |
+|---|---|
+| `.network(underlying:)` | Transport-level failures (no connection, TLS, timeout) |
+| `.authentication(underlying:)` | Token invalid, biometric rejected |
+| `.notFound` | Resource absent (HTTP 404 equivalent) |
+| `.timeout` | Operation exceeded its deadline |
+| `.cancelled` | Operation cancelled before completion |
+| `.unknown(underlying:)` | Anything that doesn't fit the above |
+
+#### Legacy error types
+
 - `SyzygyError` — base error protocol
 - `SyzygyErrorCode` — typed, extensible error codes
 - `SyzygyErrorSeverity` — error severity levels
+
+## Breaking Changes (v2.0.0)
+
+The following changes are **breaking** relative to v1.x:
+
+- **`NetworkClientProtocol`** — `dispose()` is now a required method. Any conforming type must implement it (a no-op `func dispose() {}` is sufficient).
+- **`ConnectivityProvider`** — `dispose()` is now a required method. Any conforming type must implement it.
+- **`AuthProvider`** — `canUseBiometric() -> Bool`, `authenticateWithBiometric(reason:) async -> Bool`, and `refreshToken() async -> Bool` are now required methods.
+- **`SyzygyFoundationError`** — new typed error enum. Replaces ad-hoc `Error` throws in Foundation-layer code; update catch sites accordingly.
 
 ### Testing Support
 
