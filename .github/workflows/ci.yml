@@ -4,48 +4,7 @@ on:
   push:
     branches: ['**']
     tags-ignore: ['*']
-  pull_request:
-    branches: [main]
 
 jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fetch SwiftLint config
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/ios/.swiftlint.yml \
-            -o .swiftlint.yml
-
-      - name: Install SwiftLint
-        run: brew install swiftlint
-
-      - name: SwiftLint
-        run: swiftlint --config .swiftlint.yml
-
-      - name: Build
-        run: swift build
-
-      - name: Test with coverage
-        run: swift test --enable-code-coverage
-
-      - name: Generate coverage summary
-        run: |
-          PROFDATA=$(find .build -name "*.profdata" | head -1)
-          BINARY=$(find .build/debug -name "*PackageTests.xctest" -type d | head -1)
-          if [ -n "$PROFDATA" ] && [ -n "$BINARY" ]; then
-            xcrun llvm-cov report \
-              "$BINARY/Contents/MacOS/$(basename $BINARY .xctest)" \
-              --instr-profile="$PROFDATA" \
-              --ignore-filename-regex=".*Tests.*" \
-              2>/dev/null | tee /tmp/coverage-report.txt || true
-            {
-              echo "## Coverage Report"
-              echo "\`\`\`"
-              cat /tmp/coverage-report.txt
-              echo "\`\`\`"
-            } >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "## Coverage Report — coverage data not found." >> "$GITHUB_STEP_SUMMARY"
-          fi
+  ci:
+    uses: Syzygy-Hub/.github/.github/workflows/ios-ci.yml@main
