@@ -17,15 +17,15 @@ import SyzygyFoundation
     }
 
     @Test func equalityTrueForSameRawValue() {
-        let a = SyzygyErrorCode(rawValue: "timeout")
-        let b = SyzygyErrorCode(rawValue: "timeout")
-        #expect(a == b)
+        let lhs = SyzygyErrorCode(rawValue: "timeout")
+        let rhs = SyzygyErrorCode(rawValue: "timeout")
+        #expect(lhs == rhs)
     }
 
     @Test func equalityFalseForDifferentRawValues() {
-        let a = SyzygyErrorCode(rawValue: "timeout")
-        let b = SyzygyErrorCode(rawValue: "not_found")
-        #expect(a != b)
+        let lhs = SyzygyErrorCode(rawValue: "timeout")
+        let rhs = SyzygyErrorCode(rawValue: "not_found")
+        #expect(lhs != rhs)
     }
 
     @Test func descriptionReturnsRawValue() {
